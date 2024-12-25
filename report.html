@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IMMF - Report a Threat</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <div class="logo"></div>
+  <div>
+    <h1>IMMF</h1>
+    <p>Report a Threat - Protect Lives</p>
+  </div>
+</header>
+
+<div class="container">
+  <h2>Report a Threat</h2>
+  <p>Your report is secure and confidential.</p>
+
+  <form id="reportForm">
+    <div class="form-group">
+      <label for="name">Your Name</label>
+      <input type="text" id="name" name="name" placeholder="Enter your name" required>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Your Email</label>
+      <input type="email" id="email" name="email" placeholder="Enter your email" required>
+    </div>
+
+    <div class="form-group">
+      <label for="threat-type">Type of Threat</label>
+      <select id="threat-type" name="threat-type" required>
+        <option value="">Select a threat type</option>
+        <option value="physical">Physical Threat</option>
+        <option value="cyber">Cyber Threat</option>
+        <option value="social">Social Threat</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Describe the Threat</label>
+      <textarea id="description" name="description" rows="5" placeholder="Provide details about the threat" required></textarea>
+    </div>
+
+    <button type="submit" class="btn">Submit Report</button>
+  </form>
+</div>
+
+<footer>
+  <p>&copy; 2024 IMMF. All rights reserved.</p>
+  <p><a href="https://t.me/immfreport" target="_blank">Join Our Telegram</a></p>
+</footer>
+
+<script>
+document.getElementById('reportForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  // Get form data
+  const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
+  const threatType = document.getElementById('threat-type').value;
+  const description = document.getElementById('description').value;
+
+  // Telegram Bot API token
+  const botToken = '8183385081:AAEGFpDORryzRBUD8rmpjHPLv4Y7aEptx9g'; // Replace with your bot token
+  const chatId = '7747025007'; // Replace with your chat ID
+
+  // Create the message to send to Telegram
+  const message = `New Threat Report:\n\nName: ${name}\nEmail: ${email}\nType of Threat: ${threatType}\nDescription: ${description}`;
+
+  // Prepare the URL to send the message
+  const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+
+  // Send the message via fetch
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      if (data.ok) {
+        alert('Report sent successfully!');
+      } else {
+        alert('Failed to send report. Please try again later.');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('An error occurred. Please try again.');
+    });
+});
+</script>
+
+</body>
+</html>
