@@ -67,8 +67,8 @@ document.getElementById('reportForm').addEventListener('submit', function(e) {
   const description = document.getElementById('description').value;
 
   // Telegram Bot API token
-  const botToken = '8183385081:AAEGFpDORryzRBUD8rmpjHPLv4Y7aEptx9g'; // Replace with your bot token
-  const chatId = '7747025007'; // Replace with your chat ID
+  const botToken = process.env.BOT_TOKEN; // Replace with your bot token
+  const chatId =  process.env.CHAT_ID; // Replace with your chat ID
 
   // Create the message to send to Telegram
   const message = `New Threat Report:\n\nName: ${name}\nEmail: ${email}\nType of Threat: ${threatType}\nDescription: ${description}`;
