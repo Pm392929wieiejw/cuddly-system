@@ -3,61 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IMMF - Report a Threat</title>
-  <link rel="stylesheet" href="styles.css">
-  <!-- Include Google reCAPTCHA -->
+  <title>Report a Threat - IMMF</title>
+  <!-- Include reCAPTCHA -->
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <link rel="stylesheet" href="styles.css"> <!-- Linking to styles.css -->
 </head>
 <body>
 
 <header>
-  <h1>IMMF</h1>
-  <p>Report a Threat - Protect Lives</p>
+  <div class="logo"></div>
+  <div class="title-container">
+    <h1>IMMF</h1>
+    <p>Report a Threat - Protect Lives</p>
+  </div>
 </header>
 
-<div class="container">
-  <h2>Report a Threat</h2>
-  <form id="reportForm">
-    <!-- Input fields -->
-    <div>
-      <label for="name">Your Name</label>
-      <input type="text" id="name" name="name" required>
-    </div>
-    <div>
-      <label for="email">Your Email</label>
-      <input type="email" id="email" name="email" required>
-    </div>
-    <div>
-      <label for="threat-type">Type of Threat</label>
-      <select id="threat-type" name="threat-type" required>
-        <option value="">Select a threat type</option>
-        <option value="physical">Physical Threat</option>
-        <option value="cyber">Cyber Threat</option>
-        <option value="social">Social Threat</option>
-        <option value="other">Other</option>
-      </select>
-    </div>
-    <div>
-      <label for="description">Describe the Threat</label>
-      <textarea id="description" name="description" rows="5" required></textarea>
-    </div>
+<nav>
+  <a href="#home">Home</a>
+  <a href="#report">Report a Threat</a>
+  <a href="#contact">Contact Us</a>
+</nav>
 
-    <!-- Add reCAPTCHA widget -->
-    <div class="g-recaptcha" data-sitekey="6LcFG6YqAAAAAHyDED5OYLlLTsXNGk13l83inmOL"></div>
-
-    <button type="submit">Submit Report</button>
-  </form>
+<div class="hero">
+  <div class="hero-content">
+    <h2>Your Voice Matters</h2>
+    <p>Help us protect lives by reporting threats confidentially and securely.</p>
+    <a class="cta-button" href="#report">Report Now</a>
+  </div>
 </div>
 
+<section id="report" class="content">
+  <div class="container">
+    <h2>Report a Threat</h2>
+    <p>Your report is secure and confidential.</p>
+
+    <form id="reportForm">
+      <!-- Name -->
+      <div class="form-group">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter your name" required>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email">Your Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+      </div>
+
+      <!-- Threat Type -->
+      <div class="form-group">
+        <label for="threat-type">Type of Threat</label>
+        <select id="threat-type" name="threat-type" required>
+          <option value="" disabled selected>Select a threat type</option>
+          <option value="physical">Physical Threat</option>
+          <option value="cyber">Cyber Threat</option>
+          <option value="social">Social Threat</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <!-- Description -->
+      <div class="form-group">
+        <label for="description">Describe the Threat</label>
+        <textarea id="description" name="description" rows="5" placeholder="Provide details about the threat" required></textarea>
+      </div>
+
+      <!-- reCAPTCHA -->
+      <div class="g-recaptcha" data-sitekey="6LcFG6YqAAAAAHyDED5OYLlLTsXNGk13l83inmOL"></div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn">Submit Report</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2024 IMMF. All rights reserved.</p>
+  <p><a href="https://t.me/immfreport" target="_blank">Join Our Telegram</a></p>
+</footer>
+
 <script>
-  document.getElementById('reportForm').addEventListener('submit', function(e) {
+  document.getElementById('reportForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const threatType = document.getElementById('threat-type').value;
     const description = document.getElementById('description').value;
-    const recaptchaResponse = grecaptcha.getResponse(); // Get reCAPTCHA token
+    const recaptchaResponse = grecaptcha.getResponse();
 
     if (!recaptchaResponse) {
       alert('Please complete the reCAPTCHA.');
@@ -72,15 +105,15 @@
         email,
         threatType,
         description,
-        token: recaptchaResponse, // Send reCAPTCHA token to server
+        token: recaptchaResponse,
       }),
     })
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          alert(data.message);
+          alert('Report submitted successfully!');
         } else {
-          alert(data.error || 'Failed to send report.');
+          alert(data.error || 'Failed to send the report.');
         }
       })
       .catch(error => {
