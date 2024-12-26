@@ -5,33 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IMMF - Report a Threat</title>
   <link rel="stylesheet" href="styles.css">
+  <!-- Include Google reCAPTCHA -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
 
 <header>
-  <div class="logo"></div>
-  <div>
-    <h1>IMMF</h1>
-    <p>Report a Threat - Protect Lives</p>
-  </div>
+  <h1>IMMF</h1>
+  <p>Report a Threat - Protect Lives</p>
 </header>
 
 <div class="container">
   <h2>Report a Threat</h2>
-  <p>Your report is secure and confidential.</p>
-
   <form id="reportForm">
-    <div class="form-group">
+    <!-- Input fields -->
+    <div>
       <label for="name">Your Name</label>
-      <input type="text" id="name" name="name" placeholder="Enter your name" required>
+      <input type="text" id="name" name="name" required>
     </div>
-
-    <div class="form-group">
+    <div>
       <label for="email">Your Email</label>
-      <input type="email" id="email" name="email" placeholder="Enter your email" required>
+      <input type="email" id="email" name="email" required>
     </div>
-
-    <div class="form-group">
+    <div>
       <label for="threat-type">Type of Threat</label>
       <select id="threat-type" name="threat-type" required>
         <option value="">Select a threat type</option>
@@ -41,58 +37,58 @@
         <option value="other">Other</option>
       </select>
     </div>
-
-    <div class="form-group">
+    <div>
       <label for="description">Describe the Threat</label>
-      <textarea id="description" name="description" rows="5" placeholder="Provide details about the threat" required></textarea>
+      <textarea id="description" name="description" rows="5" required></textarea>
     </div>
 
-    <button type="submit" class="btn">Submit Report</button>
+    <!-- Add reCAPTCHA widget -->
+    <div class="g-recaptcha" data-sitekey="6LcFG6YqAAAAAHyDED5OYLlLTsXNGk13l83inmOL"></div>
+
+    <button type="submit">Submit Report</button>
   </form>
 </div>
 
-<footer>
-  <p>&copy; 2024 IMMF. All rights reserved.</p>
-  <p><a href="https://t.me/immfreport" target="_blank">Join Our Telegram</a></p>
-</footer>
-
 <script>
-document.getElementById('reportForm').addEventListener('submit', function(e) {
-  e.preventDefault();
+  document.getElementById('reportForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-  const name = document.getElementById('name').value;
-  const email = document.getElementById('email').value;
-  const threatType = document.getElementById('threat-type').value;
-  const description = document.getElementById('description').value;
-  const recaptchaResponse = grecaptcha.getResponse();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const threatType = document.getElementById('threat-type').value;
+    const description = document.getElementById('description').value;
+    const recaptchaResponse = grecaptcha.getResponse(); // Get reCAPTCHA token
 
-  if (!recaptchaResponse) {
-    alert('Please complete the reCAPTCHA.');
-    return;
-  }
+    if (!recaptchaResponse) {
+      alert('Please complete the reCAPTCHA.');
+      return;
+    }
 
-  fetch('/api/send-report', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      name,
-      email,
-      threatType,
-      description,
-      token: recaptchaResponse // Send the reCAPTCHA token
+    fetch('/api/send-report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        email,
+        threatType,
+        description,
+        token: recaptchaResponse, // Send reCAPTCHA token to server
+      }),
     })
-  })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        alert(data.message);
-      } else {
-        alert(data.error || 'Failed to send report.');
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      alert('An error occurred. Please try again.');
-    });
-});
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert(data.message);
+        } else {
+          alert(data.error || 'Failed to send report.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+      });
+  });
 </script>
+
+</body>
+</html>
