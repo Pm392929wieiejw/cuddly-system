@@ -3,12 +3,37 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { name, email, threatType, description } = req.body;
+  const { name, email, threatType, description, token } = req.body;
 
-  if (!name || !email || !threatType || !description) {
-    return res.status(400).json({ error: 'All fields are required' });
+  if (!name || !email || !threatType || !description || !token) {
+    return res.status(400).json({ error: 'All fields are required, including reCAPTCHA token.' });
   }
 
+  // Validate reCAPTCHA
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+  const verifyURL = `https://www.google.com/recaptcha/api/siteverify`;
+
+  try {
+    const recaptchaResponse = await fetch(verifyURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        secret: secretKey,
+        response: token,
+      }),
+    });
+
+    const recaptchaData = await recaptchaResponse.json();
+
+    if (!recaptchaData.success) {
+      return res.status(400).json({ error: 'Invalid reCAPTCHA. Please try again.' });
+    }
+  } catch (error) {
+    console.error('reCAPTCHA validation error:', error);
+    return res.status(500).json({ error: 'Failed to validate reCAPTCHA.' });
+  }
+
+  // Proceed with sending the report
   const botToken = process.env.BOT_TOKEN;
   const chatId = process.env.CHAT_ID;
 
@@ -25,7 +50,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ success: false, error: 'Failed to send report.' });
     }
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error sending report:', error);
     return res.status(500).json({ success: false, error: 'An error occurred.' });
   }
 }
