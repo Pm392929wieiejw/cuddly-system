@@ -64,11 +64,23 @@ document.getElementById('reportForm').addEventListener('submit', function(e) {
   const email = document.getElementById('email').value;
   const threatType = document.getElementById('threat-type').value;
   const description = document.getElementById('description').value;
+  const recaptchaResponse = grecaptcha.getResponse();
+
+  if (!recaptchaResponse) {
+    alert('Please complete the reCAPTCHA.');
+    return;
+  }
 
   fetch('/api/send-report', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, email, threatType, description })
+    body: JSON.stringify({
+      name,
+      email,
+      threatType,
+      description,
+      token: recaptchaResponse // Send the reCAPTCHA token
+    })
   })
     .then(response => response.json())
     .then(data => {
@@ -83,8 +95,4 @@ document.getElementById('reportForm').addEventListener('submit', function(e) {
       alert('An error occurred. Please try again.');
     });
 });
-
 </script>
-
-</body>
-</html>
